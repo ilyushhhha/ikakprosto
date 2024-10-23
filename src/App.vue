@@ -1,26 +1,27 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <router-view /> <!-- Отображаем текущий маршрут -->
+  </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+import { provide,onMounted} from 'vue';
+import { useService } from './hooks/useService'; // Импортируем useService
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+const { data, error, loading, fetchResources } = useService(); // Используем хук
+
+// Провайдер для доступа к данным во вложенных компонентах
+provide('postsData', data);
+provide('loadingState', loading);
+provide('errorState', error);
+// Запрос данных при монтировании
+onMounted(async () => {
+  await fetchResources('posts');
+});
+console.log('data::::',data)
+
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+/* Добавьте стили для компонента при необходимости */
 </style>
